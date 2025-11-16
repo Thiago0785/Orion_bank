@@ -1,0 +1,478 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orion - Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Ícones Font Awesome 6 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    
+    <!-- Toastify para notificações (substituto de alert()) -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <style>
+        /* Estilos personalizados */
+        body {
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .bg-dark-card {
+            background-color: #1f1f1f;
+        }
+
+        .text-green-orion {
+            color: #00ff88;
+        }
+
+        .gradient-green-button {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+            transition: all 0.3s ease;
+        }
+        .gradient-green-button:hover {
+            box-shadow: 0 4px 15px rgba(0, 255, 136, 0.4);
+            transform: translateY(-1px);
+        }
+        
+        /* Estilo para a barra lateral de navegação (mobile) */
+        @media (max-width: 768px) {
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease-in-out;
+                z-index: 20;
+            }
+            .sidebar.open {
+                transform: translateX(0);
+            }
+            .content-area {
+                transition: margin-left 0.3s ease-in-out;
+            }
+        }
+        
+        /* Classes para a animação do saldo */
+        .balance-card {
+            box-shadow: 0 0 30px rgba(0, 255, 136, 0.15);
+        }
+
+    </style>
+</head>
+<body class="h-full">
+
+    <!-- Função de notificação Toastify (Substitui o alert()) -->
+    <script>
+        function showToast(message, isSuccess = true) {
+            Toastify({
+                text: message,
+                duration: 4000,
+                newWindow: true,
+                close: true,
+                gravity: "top", 
+                position: "right", 
+                stopOnFocus: true, 
+                style: {
+                    background: isSuccess ? "linear-gradient(to right, #00ff88, #00cc6a)" : "linear-gradient(to right, #ef4444, #b91c1c)",
+                    color: "#0a0a0a",
+                    fontWeight: "bold",
+                    borderRadius: "8px",
+                },
+                onClick: function(){}
+            }).showToast();
+        }
+    </script>
+    
+    <div class="min-h-full flex flex-col md:flex-row">
+        
+        <!-- Sidebar (Barra Lateral) -->
+        <div id="sidebar" class="sidebar fixed inset-y-0 left-0 transform md:relative md:translate-x-0 w-64 bg-dark-card p-6 flex flex-col space-y-6">
+            
+            <div class="flex items-center justify-between md:justify-start">
+                <h1 class="text-2xl font-bold text-green-orion tracking-wider">Orion Bank</h1>
+                <!-- Botão para fechar no mobile -->
+                <button id="close-sidebar" class="md:hidden text-gray-400 hover:text-white">
+                    <i class="fas fa-times text-2xl"></i>
+                </button>
+            </div>
+            
+            <nav class="flex-1 space-y-2">
+                <a href="{{ url_for('dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg bg-gray-700/50 text-white font-medium">
+                    <i class="fas fa-home"></i>
+                    <span>Dashboard</span>
+                </a>
+                <button onclick="showModal('transfer-modal')" class="w-full flex items-center space-x-3 p-3 rounded-lg text-gray-400 hover:bg-gray-700/50 hover:text-white font-medium transition duration-150">
+                    <i class="fas fa-paper-plane"></i>
+                    <span>Transferência PIX</span>
+                </button>
+                <button onclick="showToast('Funcionalidade em desenvolvimento!', false)" class="w-full flex items-center space-x-3 p-3 rounded-lg text-gray-400 hover:bg-gray-700/50 hover:text-white font-medium transition duration-150">
+                    <i class="fas fa-credit-card"></i>
+                    <span>Meus Cartões</span>
+                </button>
+                <button onclick="showModal('delete-modal')" class="w-full flex items-center space-x-3 p-3 rounded-lg text-gray-400 hover:bg-red-700/50 hover:text-red-300 font-medium transition duration-150">
+                    <i class="fas fa-user-times"></i>
+                    <span>Excluir Conta</span>
+                </button>
+                <a href="{{ url_for('logout') }}" class="w-full flex items-center space-x-3 p-3 rounded-lg text-gray-400 hover:bg-red-700/50 hover:text-white font-medium transition duration-150">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </nav>
+            
+            <div class="mt-auto pt-6 border-t border-gray-700/50">
+                <p class="text-sm text-gray-500">
+                    Versão 1.0.0
+                </p>
+            </div>
+
+        </div>
+
+        <!-- Área de Conteúdo Principal -->
+        <main class="content-area flex-1 p-4 md:p-8 bg-dark min-h-screen">
+            
+            <!-- Navbar Superior (Mobile Header) -->
+            <header class="flex justify-between items-center md:hidden mb-6">
+                <button id="open-sidebar" class="text-gray-400 hover:text-white">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
+                <h1 class="text-xl font-bold text-green-orion">Orion Bank</h1>
+                
+                <!-- Nome de usuário e Dropdown para mobile -->
+                <div class="relative inline-block text-left">
+                    <button id="user-menu-button-mobile" class="p-2 rounded-full bg-gray-700/50 hover:bg-gray-700 transition duration-150 focus:outline-none">
+                        <i class="fas fa-user-circle text-xl text-green-orion"></i>
+                    </button>
+                    <!-- O dropdown de mobile pode ser removido pois já existe a sidebar -->
+                </div>
+            </header>
+
+            <!-- Mensagens Flash (Alerta/Sucesso) -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="space-y-3 mb-6">
+                    {% for category, message in messages %}
+                        <div class="p-3 rounded-lg shadow-md {% if category == 'success' %}bg-green-700 text-white{% else %}bg-red-700 text-white{% endif %}" role="alert">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+
+            <!-- Título do Dashboard -->
+            <h2 class="text-3xl font-semibold mb-8 hidden md:block">
+                Olá, <span class="text-green-orion">{{ user_name.split(' ')[0] if user_name else 'Cliente' }}!</span>
+            </h2>
+
+            <!-- Cards de Informação -->
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-10">
+                
+                <!-- Card de Saldo -->
+                <div class="lg:col-span-2 bg-dark-card p-6 rounded-2xl shadow-lg balance-card">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-xl font-medium text-gray-400">Seu Saldo Atual</h3>
+                        <i class="fas fa-wallet text-3xl text-green-orion"></i>
+                    </div>
+                    <!-- O saldo é carregado pelo JS -->
+                    <p id="user-balance" class="text-5xl font-extrabold text-white tracking-tight animate-pulse">
+                        R$ 0,00
+                    </p>
+                    <div class="mt-6">
+                        <button onclick="showModal('transfer-modal')" class="w-full md:w-auto gradient-green-button text-gray-900 font-bold py-3 px-8 rounded-xl shadow-lg transform transition duration-200">
+                            <i class="fas fa-paper-plane mr-2"></i> Fazer PIX
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Card de Transferência Rápida (Apenas um atalho) -->
+                <div class="bg-dark-card p-6 rounded-2xl shadow-lg flex flex-col justify-center items-center text-center">
+                    <i class="fas fa-qrcode text-5xl text-gray-500 mb-4"></i>
+                    <h3 class="text-xl font-medium mb-2">Pague com QR Code</h3>
+                    <p class="text-sm text-gray-500 mb-4">Leia um código PIX rapidamente.</p>
+                    <button onclick="showToast('Leitor de QR Code em construção!', false)" class="w-full gradient-green-button text-gray-900 font-bold py-2 rounded-xl shadow-md">
+                        Escanear
+                    </button>
+                </div>
+            </div>
+
+            <!-- Tabela de Histórico de Transações -->
+            <div class="bg-dark-card p-6 rounded-2xl shadow-lg">
+                <h3 class="text-2xl font-semibold mb-6 border-b border-gray-700/50 pb-3">Últimas Transações</h3>
+
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead>
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Data</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Descrição</th>
+                                <th class="px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider">Valor</th>
+                            </tr>
+                        </thead>
+                        <!-- O corpo será populado pelo JavaScript -->
+                        <tbody id="transactions-body" class="divide-y divide-gray-700">
+                            <!-- Placeholder de carregamento -->
+                            <tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Carregando transações...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="mt-4 text-center">
+                    <button onclick="showToast('Ver histórico completo em desenvolvimento!', false)" class="text-green-orion text-sm font-medium hover:text-green-400 transition duration-150">
+                        Ver Histórico Completo
+                    </button>
+                </div>
+            </div>
+
+        </main>
+    </div>
+
+    <!-- MODAL DE TRANSFERÊNCIA PIX -->
+    <div id="transfer-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4">
+        <div class="bg-dark-card p-8 rounded-2xl shadow-2xl w-full max-w-lg">
+            <h3 class="text-2xl font-bold mb-6 text-white border-b border-gray-700/50 pb-2">Nova Transferência PIX</h3>
+            
+            <form id="transfer-form">
+                <div class="mb-4">
+                    <label for="receiver_cpf" class="block text-sm font-medium text-gray-400 mb-1">CPF/Email do Destinatário</label>
+                    <input type="text" id="receiver_cpf" name="receiver_cpf" required
+                           class="w-full px-4 py-3 bg-gray-700/50 rounded-lg border border-gray-600 focus:border-green-orion focus:ring-1 focus:ring-green-orion text-white">
+                </div>
+                <div class="mb-6">
+                    <label for="amount" class="block text-sm font-medium text-gray-400 mb-1">Valor (R$)</label>
+                    <input type="number" step="0.01" min="0.01" id="amount" name="amount" required
+                           class="w-full px-4 py-3 bg-gray-700/50 rounded-lg border border-gray-600 focus:border-green-orion focus:ring-1 focus:ring-green-orion text-white">
+                </div>
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="hideModal('transfer-modal')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-xl transition duration-150">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="transfer-button" class="gradient-green-button text-gray-900 font-bold py-2 px-6 rounded-xl transition duration-150">
+                        Transferir
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- MODAL DE EXCLUSÃO DE CONTA -->
+    <div id="delete-modal" class="hidden fixed inset-0 bg-black bg-opacity-75 z-50 flex justify-center items-center p-4">
+        <div class="bg-dark-card p-8 rounded-2xl shadow-2xl w-full max-w-lg">
+            <h3 class="text-2xl font-bold mb-4 text-red-500">Excluir Sua Conta</h3>
+            <p class="text-gray-400 mb-6">
+                <strong>Atenção:</strong> Esta ação é irreversível. Para confirmar a exclusão da sua conta, digite sua senha abaixo.
+            </p>
+            
+            <form id="delete-form">
+                <div class="mb-6">
+                    <label for="delete-password" class="block text-sm font-medium text-gray-400 mb-1">Sua Senha</label>
+                    <input type="password" id="delete-password" name="delete-password" required
+                           class="w-full px-4 py-3 bg-gray-700/50 rounded-lg border border-gray-600 focus:border-red-500 focus:ring-1 focus:ring-red-500 text-white">
+                </div>
+                
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="hideModal('delete-modal')" class="bg-gray-600 hover:bg-gray-700 text-white font-bold py-2 px-6 rounded-xl transition duration-150">
+                        Cancelar
+                    </button>
+                    <button type="submit" id="delete-button" class="bg-red-700 hover:bg-red-800 text-white font-bold py-2 px-6 rounded-xl shadow-md transition duration-150">
+                        Confirmar Exclusão
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+    <script>
+        // --- Funções Auxiliares de Modal ---
+        function showModal(id) {
+            document.getElementById(id).classList.remove('hidden');
+        }
+
+        function hideModal(id) {
+            document.getElementById(id).classList.add('hidden');
+            
+            // Limpa o formulário de transferência/exclusão ao fechar
+            if (id === 'transfer-modal') {
+                document.getElementById('transfer-form').reset();
+            }
+            if (id === 'delete-modal') {
+                document.getElementById('delete-form').reset();
+            }
+        }
+        
+        // --- Lógica de Carregamento de Dados (O CRUCIAL) ---
+
+        /**
+         * Busca os dados do usuário (saldo e transações) na API e atualiza o DOM.
+         */
+        async function fetchUserData() {
+            try {
+                // Remove o efeito de carregamento antes de buscar
+                const balanceElement = document.getElementById('user-balance');
+                if (balanceElement) balanceElement.classList.remove('animate-pulse');
+                
+                const response = await fetch('/api/user_data');
+                const data = await response.json();
+
+                if (data.success) {
+                    // 1. ATUALIZAÇÃO DO SALDO
+                    const formattedBalance = parseFloat(data.balance).toLocaleString('pt-BR', {
+                        style: 'currency',
+                        currency: 'BRL',
+                        minimumFractionDigits: 2
+                    });
+                    if (balanceElement) {
+                        balanceElement.textContent = formattedBalance;
+                    }
+                    
+                    // 2. ATUALIZAÇÃO DO HISTÓRICO DE TRANSAÇÕES
+                    const transactionsTableBody = document.getElementById('transactions-body');
+                    transactionsTableBody.innerHTML = ''; // Limpa a tabela
+                    
+                    if (data.transactions && data.transactions.length > 0) {
+                        data.transactions.forEach(tx => {
+                            const amountClass = tx.is_credit ? 'text-green-500' : 'text-red-500';
+                            const sign = tx.is_credit ? '+' : '-';
+                            const formattedAmount = parseFloat(tx.amount).toLocaleString('pt-BR', {
+                                style: 'currency',
+                                currency: 'BRL',
+                                minimumFractionDigits: 2
+                            });
+
+                            const row = `
+                                <tr class="border-b border-gray-700/50 hover:bg-gray-700/30 transition duration-100">
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${tx.date.split(' ')[0]}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${tx.description}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold ${amountClass}">
+                                        ${sign} ${formattedAmount}
+                                    </td>
+                                </tr>
+                            `;
+                            transactionsTableBody.innerHTML += row;
+                        });
+                    } else {
+                        transactionsTableBody.innerHTML = `<tr><td colspan="3" class="px-6 py-4 text-center text-gray-500">Nenhuma transação recente.</td></tr>`;
+                    }
+
+                } else {
+                    showToast(data.message || "Erro ao carregar dados do usuário.", false);
+                    if (balanceElement) balanceElement.textContent = 'R$ Erro';
+                }
+            } catch (error) {
+                console.error('Erro na comunicação com a API:', error);
+                showToast("Erro de comunicação com o servidor.", false);
+            }
+        }
+        
+        // --- Lógica de Transferência PIX ---
+        document.getElementById('transfer-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const button = document.getElementById('transfer-button');
+            button.disabled = true;
+            button.textContent = 'Transferindo...';
+
+            const receiver_cpf = document.getElementById('receiver_cpf').value;
+            const amount = document.getElementById('amount').value;
+            
+            try {
+                const response = await fetch('/api/transfer', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ receiver_cpf, amount })
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    showToast(data.message, true);
+                    hideModal('transfer-modal');
+                    fetchUserData(); // Recarrega os dados para atualizar o saldo
+                } else {
+                    showToast(data.message || "Erro na transferência.", false);
+                }
+            } catch (error) {
+                console.error('Erro de rede na transferência:', error);
+                showToast("Erro de comunicação com o servidor.", false);
+            } finally {
+                button.disabled = false;
+                button.textContent = 'Transferir';
+            }
+        });
+
+        // --- Lógica de Exclusão de Conta ---
+        document.getElementById('delete-form').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const deleteModal = document.getElementById('delete-modal');
+            const password = document.getElementById('delete-password').value;
+            
+            try {
+                const response = await fetch('{{ url_for("api_delete_account") }}', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ senha: password })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok && data.success) {
+                    showToast(data.message, true);
+                    // Redireciona para o logout para encerrar a sessão
+                    setTimeout(() => {
+                        window.location.href = '{{ url_for("logout") }}';
+                    }, 1000); 
+                } else {
+                    showToast(data.message || "Senha incorreta ou erro na exclusão.", false);
+                }
+            } catch (error) {
+                console.error('Erro de rede ao tentar excluir conta:', error);
+                showToast("Erro de comunicação com o servidor.", false);
+            } finally {
+                 deleteModal.classList.add('hidden');
+                 document.getElementById('delete-password').value = '';
+            }
+        });
+
+
+        // --- Eventos de UI e Inicialização ---
+        document.addEventListener('DOMContentLoaded', () => {
+            // Inicializa e configura o loop de atualização
+            fetchUserData(); 
+            // Atualiza automaticamente a cada 10 segundos
+            setInterval(fetchUserData, 10000); 
+
+            // Lógica de Toggle da Sidebar (Mobile)
+            const sidebar = document.getElementById('sidebar');
+            const openSidebar = document.getElementById('open-sidebar');
+            const closeSidebar = document.getElementById('close-sidebar');
+
+            openSidebar.addEventListener('click', () => {
+                sidebar.classList.add('open');
+            });
+
+            closeSidebar.addEventListener('click', () => {
+                sidebar.classList.remove('open');
+            });
+            
+            // Fechar modal clicando fora
+            document.getElementById('transfer-modal').addEventListener('click', (event) => {
+                if (event.target === document.getElementById('transfer-modal')) {
+                    hideModal('transfer-modal');
+                }
+            });
+            document.getElementById('delete-modal').addEventListener('click', (event) => {
+                if (event.target === document.getElementById('delete-modal')) {
+                    hideModal('delete-modal');
+                }
+            });
+        });
+        
+  </script>
+
+ </body>
+</html>

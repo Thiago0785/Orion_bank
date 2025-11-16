@@ -1,0 +1,21 @@
+{
+    "super_admin": {
+        "email": "admin@orion.com",
+        "senha": "scrypt:32768:8:1$tJsbtizYi9AWKqHo$4cf0f2863b80830a4372a897082b0b3a64ae89215abe2d37543760898a1f04ba9e4e4d2c8970cac74b1263fa89d84071a8b0ae84e92337bf6fd75f7b66b520d7",
+        "nome": "Orion Super Admin",
+        "cpf": "00000000000",
+        "is_admin": true,
+        "saldo": 1000000.0,
+        "contas_ativas": 5,
+        "transactions": []
+    },
+    "8ac51b170cc04055a0dc266aa3b8b28e": {
+        "email": "gabifalso@gmail.com",
+        "password_hash": "scrypt:32768:8:1$1XwxeQreB9uURf0H$51c75c162d7e72a92822723f23b6b8de04380c35bb853f45faf748f11d0f0566e6c5bbe8143b6f7492f43286992342667e5e7b24b982d67e323c8eb202aeeca6",
+        "nome": "Gabrielle Pereira",
+        "cpf": "11122233344",
+        "is_admin": false,
+        "balance": 1000.0,
+        "transactions": []
+    }
+}

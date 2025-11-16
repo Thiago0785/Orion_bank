@@ -1,0 +1,436 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Orion - Banco Digital do Futuro</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+         body {
+             box-sizing: border-box;
+             font-family: 'Inter', sans-serif;
+             scroll-behavior: smooth;
+         }
+         
+         .bg-dark {
+             background-color: #0a0a0a;
+         }
+         
+         .bg-dark-secondary {
+             background-color: #1a1a1a;
+         }
+         
+         .bg-dark-card {
+             background-color: #1f1f1f;
+         }
+         
+         .text-green-orion {
+             color: #00ff88;
+         }
+         
+         .bg-green-orion {
+             background-color: #00ff88;
+         }
+         
+         .border-green-orion {
+             border-color: #00ff88;
+         }
+         
+         .gradient-green {
+             background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+         }
+         
+         .gradient-dark {
+             background: linear-gradient(180deg, #1f1f1f 0%, #0a0a0a 100%);
+         }
+
+         .hero-title {
+             font-size: clamp(2rem, 5vw, 4rem);
+             line-height: 1.1;
+         }
+
+         .scroll-snap-start {
+             scroll-snap-align: start;
+             min-height: 100vh;
+         }
+
+         /* Custom scrollbar for aesthetics */
+         ::-webkit-scrollbar {
+             width: 8px;
+         }
+         ::-webkit-scrollbar-track {
+             background: #0a0a0a;
+         }
+         ::-webkit-scrollbar-thumb {
+             background: #00ff88;
+             border-radius: 4px;
+         }
+
+         /* Classes de animação */
+         .slide-in-top {
+             animation: slide-in-top 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both;
+         }
+
+         @keyframes slide-in-top {
+             0% {
+                 transform: translateY(-100px);
+                 opacity: 0;
+             }
+             100% {
+                 transform: translateY(0);
+                 opacity: 1;
+             }
+         }
+         
+         .pulse-shadow {
+             box-shadow: 0 0 15px rgba(0, 255, 136, 0.5);
+             transition: box-shadow 0.3s ease;
+         }
+         
+         .pulse-shadow:hover {
+             box-shadow: 0 0 25px rgba(0, 255, 136, 0.8);
+         }
+         
+         .input-dark {
+              background-color: #1a1a1a;
+              border: 1px solid #333;
+              color: #f0f0f0;
+              transition: all 0.2s;
+         }
+         
+         .input-dark:focus {
+              border-color: #00ff88;
+              box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.5);
+              outline: none;
+         }
+  </style>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+ </head>
+
+ <body class="bg-dark text-gray-100 h-full scroll-smooth">
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+        {% for category, message in messages %}
+        <div id="flash-message" class="fixed top-5 right-5 z-50 p-4 rounded-lg shadow-2xl transition-opacity duration-300 slide-in-top
+            {% if category == 'success' %} 
+                bg-green-700 text-white 
+            {% else %} 
+                bg-red-700 text-white 
+            {% endif %}
+        ">
+            <p class="font-semibold">{{ message }}</p>
+            <button onclick="document.getElementById('flash-message').classList.add('hidden')" class="absolute top-1 right-1 text-lg font-bold">&times;</button>
+        </div>
+        {% endfor %}
+    {% endif %}
+  {% endwith %}
+
+  <main class="overflow-y-scroll snap-y snap-mandatory h-full">
+
+    <header class="fixed top-0 left-0 w-full bg-dark bg-opacity-90 backdrop-blur-sm z-40 shadow-xl">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <div class="text-2xl font-bold text-green-orion tracking-widest cursor-pointer" onclick="scrollToSection('home-section')">
+                ORION
+            </div>
+            
+            <div class="hidden md:flex space-x-8 items-center">
+                <a href="#home-section" class="text-gray-300 hover:text-green-orion transition duration-200">Home</a>
+                <a href="#features-section" class="text-gray-300 hover:text-green-orion transition duration-200">Recursos</a>
+                <a href="#about-section" class="text-gray-300 hover:text-green-orion transition duration-200">Sobre</a>
+                <button id="nav-login-btn" onclick="scrollToSection('login-section')" class="gradient-green text-gray-900 font-semibold py-2 px-6 rounded-full shadow-lg hover:shadow-green-orion/50 transition duration-300 pulse-shadow">
+                    Login
+                </button>
+            </div>
+            
+            <div class="md:hidden">
+                <button id="mobile-menu-button" class="text-gray-300 hover:text-green-orion text-2xl">
+                    <i class="fas fa-bars"></i>
+                </button>
+            </div>
+        </nav>
+    </header>
+
+    <section id="home-section" class="scroll-snap-start pt-20 flex items-center justify-center bg-dark text-center">
+        <div class="container mx-auto px-6 py-12">
+            <h1 class="hero-title font-extrabold text-white mb-6 slide-in-top">
+                <span class="text-green-orion">Orion:</span> O Banco Digital <br class="hidden sm:block">do Futuro.
+            </h1>
+            <p class="text-xl text-gray-400 max-w-3xl mx-auto mb-10 slide-in-top" style="animation-delay: 0.2s;">
+                Gerencie suas finanças com inteligência artificial e segurança de nível espacial. Chegou a revolução financeira que você esperava.
+            </p>
+            <button onclick="scrollToSection('login-section')" class="gradient-green text-gray-900 font-bold text-lg py-3 px-10 rounded-full shadow-2xl hover:scale-105 transition duration-300 pulse-shadow slide-in-top" style="animation-delay: 0.4s;">
+                Abrir Minha Conta Grátis
+            </button>
+            
+            <div class="mt-20 flex justify-center">
+                <div class="w-full max-w-4xl h-64 bg-dark-secondary rounded-3xl border border-green-orion/30 shadow-2xl shadow-green-orion/20 relative overflow-hidden">
+                    <div class="absolute inset-0 bg-dark-card opacity-50 blur-xl"></div>
+                    <div class="absolute inset-0 flex items-center justify-center text-5xl font-mono text-green-orion/30">
+                        ORION FINANCE
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="features-section" class="scroll-snap-start pt-20 flex items-center justify-center bg-dark-secondary">
+        <div class="container mx-auto px-6 py-12">
+            <h2 class="text-4xl font-bold text-center text-white mb-12">Recursos Inovadores</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                
+                <div class="bg-dark-card p-6 rounded-xl shadow-lg border border-gray-700 hover:border-green-orion transition duration-300">
+                    <i class="fas fa-robot text-4xl text-green-orion mb-4"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">IA de Orçamento</h3>
+                    <p class="text-gray-400">Nosso assistente de IA otimiza seus gastos e encontra as melhores oportunidades de economia.</p>
+                </div>
+                
+                <div class="bg-dark-card p-6 rounded-xl shadow-lg border border-gray-700 hover:border-green-orion transition duration-300">
+                    <i class="fas fa-shield-alt text-4xl text-green-orion mb-4"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">Segurança Zero-Trust</h3>
+                    <p class="text-gray-400">Utilizamos criptografia de ponta e biometria avançada para proteger cada transação.</p>
+                </div>
+
+                <div class="bg-dark-card p-6 rounded-xl shadow-lg border border-gray-700 hover:border-green-orion transition duration-300">
+                    <i class="fas fa-infinity text-4xl text-green-orion mb-4"></i>
+                    <h3 class="text-xl font-semibold text-white mb-2">Rendimento Diário</h3>
+                    <p class="text-gray-400">Seu dinheiro rende automaticamente todos os dias, sem burocracia e com liquidez imediata.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <section id="login-section" class="scroll-snap-start pt-20 flex items-center justify-center bg-dark">
+        <div class="container mx-auto px-6 py-12 flex flex-col md:flex-row gap-12 items-center justify-center min-h-[calc(100vh-80px)]">
+
+            <div class="md:w-1/2 p-6 md:p-10 rounded-xl bg-dark-card shadow-xl border border-green-orion/30">
+                <h2 class="text-3xl font-bold text-white mb-4">Sua Jornada Começa Agora.</h2>
+                <p class="text-gray-400 mb-6">
+                    Acesse sua conta ou junte-se à Orion. A autenticação é rápida, segura e leva apenas alguns segundos.
+                </p>
+                
+                <ul class="space-y-3 text-gray-300">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-orion mt-1 mr-3"></i>
+                        <span>Cadastro 100% digital.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-orion mt-1 mr-3"></i>
+                        <span>Autenticação por Flask e SQLite seguro.</span>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-orion mt-1 mr-3"></i>
+                        <span>Acesso instantâneo à Dashboard.</span>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="md:w-1/2 w-full max-w-lg">
+                <div class="bg-dark-secondary p-8 rounded-xl shadow-2xl border border-gray-700">
+                    <div class="flex mb-6 border-b border-gray-700">
+                        <button id="tab-login" class="flex-1 pb-3 text-center text-lg font-semibold border-b-2 border-green-orion text-green-orion transition duration-200" onclick="switchForm('login')">
+                            Login
+                        </button>
+                        <button id="tab-register" class="flex-1 pb-3 text-center text-lg font-semibold border-b-2 border-transparent text-gray-400 hover:text-white transition duration-200" onclick="switchForm('register')">
+                            Registrar
+                        </button>
+                    </div>
+                    
+                    <div id="form-login" class="form-content">
+
+                        <form id="login-form" action="/login" method="POST" class="space-y-4">
+
+                            <input 
+                                type="text" 
+                                id="login-id" 
+                                name="login_id" 
+                                placeholder="CPF ou E-mail" 
+                                required 
+                                class="w-full p-3 rounded-lg input-dark focus:ring-green-orion"
+                            >
+                            
+                            <input 
+                                type="password" 
+                                id="login-password" 
+                                name="password" 
+                                placeholder="Senha" 
+                                required
+                                class="w-full p-3 rounded-lg input-dark focus:ring-green-orion"
+                            >
+
+                            <button 
+                                type="submit" 
+                                class="gradient-green text-gray-900 font-semibold py-3 w-full rounded-lg shadow-md hover:opacity-90 transition duration-300"
+                            >
+                                <i class="fas fa-sign-in-alt mr-2"></i> Fazer Login
+                            </button>
+
+                        </form>
+
+                        <div class="flex justify-end text-sm mt-3">
+                            <button 
+                                type="button" 
+                                onclick="showForgotPassword()" 
+                                class="text-green-orion hover:underline transition duration-300"
+                            >
+                                Esqueci minha senha
+                            </button>
+                        </div>
+
+                    </div>
+                    
+                    <div id="form-register" class="form-content hidden">
+                        <h3 class="text-2xl font-bold text-white mb-6">Criar Nova Conta</h3>
+                        
+                        <form id="register-form" action="/register" method="POST" class="space-y-4">
+                            <input type="text" id="register-name" name="register_name" placeholder="Nome Completo" required 
+                                    class="w-full p-3 rounded-lg input-dark focus:ring-green-orion">
+                                    
+                            <input type="text" id="register-cpf" name="register_cpf" placeholder="CPF (Apenas números)" required 
+                                    pattern="[0-9]{11}" title="O CPF deve conter 11 dígitos numéricos."
+                                    class="w-full p-3 rounded-lg input-dark focus:ring-green-orion">
+                            
+                            <input type="email" id="register-email" name="register_email" placeholder="E-mail" required 
+                                    class="w-full p-3 rounded-lg input-dark focus:ring-green-orion">
+                            
+                            <input type="password" id="register-password" name="register_password" placeholder="Senha (mín. 6 caracteres)" required minlength="6"
+                                    class="w-full p-3 rounded-lg input-dark focus:ring-green-orion">
+                            
+                            <button type="submit" class="gradient-green text-gray-900 font-semibold py-3 w-full rounded-lg shadow-md hover:opacity-90 transition duration-300">
+                                <i class="fas fa-user-plus mr-2"></i> Criar Conta Grátis
+                            </button>
+                        </form>
+                        </div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+    
+    <section id="about-section" class="scroll-snap-start pt-20 flex items-center justify-center bg-dark-secondary">
+        <div class="container mx-auto px-6 py-12 text-center">
+            <h2 class="text-4xl font-bold text-white mb-6">Nossa Missão</h2>
+            <p class="text-xl text-gray-400 max-w-4xl mx-auto mb-10">
+                A Orion nasceu da necessidade de um sistema financeiro mais justo, transparente e impulsionado pela tecnologia. Estamos aqui para desafiar o status quo e dar a você o controle total.
+            </p>
+            <button onclick="scrollToSection('home-section')" class="gradient-green text-gray-900 font-bold text-lg py-3 px-10 rounded-full shadow-2xl hover:scale-105 transition duration-300 pulse-shadow">
+                Voltar ao Topo
+            </button>
+        </div>
+    </section>
+
+  </main>
+  
+  <div id="forgot-password-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center">
+    <div class="bg-dark-card p-8 rounded-xl shadow-2xl w-full max-w-md border border-green-orion/30 transform transition-all duration-300 scale-100">
+        <h3 class="text-2xl font-bold text-white mb-4">Recuperar Senha</h3>
+        <p class="text-gray-400 mb-6">Informe seu CPF. Enviaremos as instruções de recuperação para o seu e-mail cadastrado.</p>
+        <form onsubmit="handleForgotPassword(event)">
+             <input type="text" id="forgot-cpf" placeholder="CPF (Apenas números)" required
+                        pattern="[0-9]{11}" title="O CPF deve conter 11 dígitos numéricos."
+                        class="w-full p-3 mb-4 rounded-lg input-dark focus:ring-green-orion">
+            <div class="flex justify-end space-x-4">
+                <button type="button" onclick="closeModal('forgot-password-modal')" class="bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-200">
+                    Cancelar
+                </button>
+                <button type="submit" class="gradient-green text-gray-900 font-semibold py-2 px-4 rounded-lg hover:opacity-90 transition duration-200">
+                    Enviar Instruções
+                </button>
+            </div>
+        </form>
+    </div>
+  </div>
+
+
+ <script>
+    
+    // ----------------------------------------------------------------------
+    // Funções Visuais e de Navegação
+    // ----------------------------------------------------------------------
+
+    function scrollToSection(id) {
+        document.getElementById(id).scrollIntoView({ behavior: 'smooth' });
+    }
+    
+    function switchForm(formType) {
+        const loginForm = document.getElementById('form-login');
+        const registerForm = document.getElementById('form-register');
+        const loginTab = document.getElementById('tab-login');
+        const registerTab = document.getElementById('tab-register');
+
+        if (formType === 'login') {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            
+            loginTab.classList.add('border-green-orion', 'text-green-orion');
+            loginTab.classList.remove('border-transparent', 'text-gray-400');
+            
+            registerTab.classList.remove('border-green-orion', 'text-green-orion');
+            registerTab.classList.add('border-transparent', 'text-gray-400');
+
+        } else if (formType === 'register') {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+
+            registerTab.classList.add('border-green-orion', 'text-green-orion');
+            registerTab.classList.remove('border-transparent', 'text-gray-400');
+            
+            loginTab.classList.remove('border-green-orion', 'text-green-orion');
+            loginTab.classList.add('border-transparent', 'text-gray-400');
+        }
+    }
+    
+    function closeModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+    
+    // ----------------------------------------------------------------------
+    // Funções de Modal (Expondo globalmente)
+    // ----------------------------------------------------------------------
+    
+    window.showForgotPassword = () => {
+         document.getElementById('forgot-password-modal').classList.remove('hidden');
+    };
+    
+    // Lógica de recuperação de senha (apenas simulação no front-end)
+    window.handleForgotPassword = (event) => {
+        event.preventDefault();
+        const cpf = document.getElementById('forgot-cpf').value;
+        
+        console.log(`Solicitação de recuperação para CPF (simulado, sem integração Flask): ${cpf}`);
+        
+        closeModal('forgot-password-modal');
+        
+        // Simulação de mensagem flash de sucesso
+        const message = "Instruções de recuperação enviadas. Verifique seu e-mail cadastrado (simulação).";
+        const flash = document.getElementById('flash-message');
+        if (flash) {
+             flash.innerHTML = `<p class="font-semibold">${message}</p> <button onclick="this.parentNode.classList.add('hidden')" class="absolute top-1 right-1 text-lg font-bold">&times;</button>`;
+             flash.classList.remove('bg-red-700', 'hidden');
+             flash.classList.add('bg-green-700');
+              setTimeout(() => {
+                flash.classList.add('hidden');
+            }, 5000);
+        }
+        document.getElementById('forgot-cpf').value = ''; 
+
+    };
+    
+    // Garante que a aba de login seja selecionada por padrão e esconde flashes
+    document.addEventListener('DOMContentLoaded', () => {
+        // Garante que a aba de login esteja ativa.
+        switchForm('login'); 
+          
+        // Esconde a mensagem flash após 5 segundos, se houver
+        const flash = document.getElementById('flash-message');
+        if (flash) {
+             setTimeout(() => {
+                flash.classList.add('hidden');
+            }, 5000);
+        }
+
+    });
+ </script>
+
+</body>
+</html>

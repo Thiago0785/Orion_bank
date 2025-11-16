@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orion - Dashboard Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <style>
+        body {
+            background-color: #0a0a0a;
+            color: #f0f0f0;
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .bg-dark-card {
+            background-color: #1f1f1f;
+        }
+
+        .text-green-orion {
+            color: #00ff88;
+        }
+
+        .gradient-green {
+            background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+        }
+
+        .input-dark {
+             background-color: #1a1a1a;
+             border: 1px solid #333;
+             color: #f0f0f0;
+             transition: all 0.2s;
+        }
+        
+        .input-dark:focus {
+             border-color: #00ff88;
+             box-shadow: 0 0 0 2px rgba(0, 255, 136, 0.5);
+             outline: none;
+        }
+        
+        .shadow-green {
+            box-shadow: 0 0 10px rgba(0, 255, 136, 0.4);
+        }
+        
+        .hologram-effect {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hologram-effect::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle at center, rgba(0, 255, 136, 0.1) 0%, transparent 70%);
+            animation: pulse-hologram 15s infinite linear;
+        }
+        
+        @keyframes pulse-hologram {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .stat-value {
+             font-size: clamp(1.5rem, 3vw, 2.5rem);
+             font-weight: bold;
+        }
+        
+        /* Estilos para a tabela */
+        .table-header {
+            background-color: #1a1a1a;
+            color: #00ff88;
+            border-bottom: 2px solid #00ff88;
+        }
+
+    </style>
+</head>
+<body class="h-full">
+    <div id="app" class="min-h-screen flex flex-col md:flex-row">
+
+        <aside class="w-full md:w-64 bg-dark-card p-6 flex flex-col justify-between border-r border-gray-800">
+            <div>
+                <div class="text-3xl font-bold text-red-500 tracking-widest mb-10">
+                    ADMIN
+                </div>
+
+                <nav class="space-y-4">
+                    <a href="{{ url_for('admin_dashboard') }}" class="flex items-center space-x-3 p-3 rounded-lg gradient-green text-gray-900 font-semibold shadow-md">
+                        <i class="fa fa-tachometer-alt"></i>
+                        <span>Dashboard Admin</span>
+                    </a>
+                    <a href="#" onclick="showModal('delete-modal')" class="flex items-center space-x-3 p-3 rounded-lg text-red-400 hover:bg-red-900/20 transition duration-200">
+                        <i class="fa fa-user-times"></i>
+                        <span>Excluir Conta Admin</span>
+                    </a>
+                    </nav>
+            </div>
+
+            <div class="pt-6 border-t border-gray-800">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-red-500/50 rounded-full flex items-center justify-center text-lg font-bold text-gray-900">
+                        A
+                    </div>
+                    <div>
+                        <p class="text-sm font-semibold text-white">Olá, {{ admin_name }}</p>
+                        <a href="{{ url_for('logout') }}" class="text-xs text-gray-500 hover:text-red-400 transition duration-200">
+                            Sair <i class="fa fa-sign-out-alt ml-1"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="flex-1 p-4 md:p-10 overflow-y-auto">
+            <header class="flex justify-between items-center mb-10">
+                <h1 class="text-3xl font-bold text-white">Visão Geral do Sistema</h1>
+            </header>
+            
+            {% if admin_message %}
+            <div class="bg-red-800/50 p-4 rounded-lg mb-6 border border-red-700">
+                <p class="font-semibold text-red-200"><i class="fa fa-exclamation-triangle mr-2"></i> {{ admin_message }}</p>
+            </div>
+            {% endif %}
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+                
+                <div class="bg-dark-card p-6 rounded-xl border border-gray-700 hover:border-green-orion/50 transition duration-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-gray-400 font-semibold">Total de Usuários</p>
+                        <i class="fa fa-users text-green-orion text-2xl"></i>
+                    </div>
+                    <p id="total-users" class="stat-value text-white">...</p>
+                    <p class="text-sm text-gray-500 mt-1">Excluindo Super Admin</p>
+                </div>
+                
+                <div class="bg-dark-card p-6 rounded-xl border border-gray-700 hover:border-green-orion/50 transition duration-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-gray-400 font-semibold">Total em Contas (BRL)</p>
+                        <i class="fa fa-dollar-sign text-green-orion text-2xl"></i>
+                    </div>
+                    <p id="total-balance" class="stat-value text-green-orion">R$ ...</p>
+                    <p class="text-sm text-gray-500 mt-1">Soma de todos os saldos</p>
+                </div>
+                
+                <div class="bg-dark-card p-6 rounded-xl border border-gray-700 hover:border-green-orion/50 transition duration-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-gray-400 font-semibold">Contas Ativas (Est.)</p>
+                        <i class="fa fa-check-circle text-green-orion text-2xl"></i>
+                    </div>
+                    <p id="active-accounts" class="stat-value text-white">...</p>
+                    <p class="text-sm text-gray-500 mt-1">Estimativa</p>
+                </div>
+                
+                <div class="bg-dark-card p-6 rounded-xl border border-gray-700 hover:border-green-orion/50 transition duration-200">
+                    <div class="flex items-center justify-between mb-3">
+                        <p class="text-gray-400 font-semibold">Transações (24h)</p>
+                        <i class="fa fa-exchange-alt text-green-orion text-2xl"></i>
+                    </div>
+                    <p id="transactions-24h" class="stat-value text-white">...</p>
+                    <p class="text-sm text-gray-500 mt-1">PIX e TEDs</p>
+                </div>
+            </div>
+
+            <div class="bg-dark-card p-6 rounded-2xl shadow-lg border border-gray-700">
+                <h3 class="text-xl font-semibold mb-6">Lista de Usuários Cadastrados</h3>
+                
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-700">
+                        <thead class="table-header">
+                            <tr>
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">ID (Parcial)</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Nome</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">Email</th>
+                                <th class="px-6 py-3 text-left text-xs font-bold uppercase tracking-wider">CPF</th>
+                                <th class="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider">Saldo</th>
+                                <th class="px-6 py-3 text-right text-xs font-bold uppercase tracking-wider">Transações</th>
+                            </tr>
+                        </thead>
+                        <tbody id="user-table-body" class="divide-y divide-gray-800">
+                            <tr><td colspan="6" class="text-center py-4 text-gray-500">Carregando dados...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </main>
+    </div>
+    
+    <div id="delete-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden flex items-center justify-center">
+        <div class="bg-dark-card p-8 rounded-xl shadow-2xl w-full max-w-md border border-red-800/30 transform transition-all duration-300 scale-100">
+            <h3 class="text-2xl font-bold text-red-400 mb-4">Confirmação de Exclusão (Admin)</h3>
+            <p class="text-gray-400 mb-6">
+                ATENÇÃO: A exclusão da conta de Super Admin é uma ação crítica. Por favor, digite sua senha para confirmar a exclusão.
+            </p>
+            <form id="delete-admin-form">
+                <input type="password" id="delete-password" name="senha" placeholder="Sua Senha" required
+                       class="w-full p-3 mb-4 rounded-lg input-dark focus:ring-red-400">
+                <div class="flex justify-end space-x-4">
+                    <button type="button" onclick="hideModal('delete-modal')" class="bg-gray-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-200">
+                        Cancelar
+                    </button>
+                    <button type="submit" class="bg-red-700 text-white font-semibold py-2 px-4 rounded-lg hover:bg-red-600 transition duration-200">
+                        <i class="fa fa-trash-alt mr-2"></i> Excluir Admin
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+
+   <script>
+    // ----------------------------------------------------------------------
+    // Funções de Utilidade Global
+    // ----------------------------------------------------------------------
+    
+    function showToast(message, isSuccess) {
+        Toastify({
+            text: message,
+            duration: 5000,
+            newWindow: true,
+            close: true,
+            gravity: "bottom",
+            position: "center",
+            stopOnFocus: true,
+            style: {
+                background: isSuccess ? "linear-gradient(to right, #00ff88, #00cc6a)" : "linear-gradient(to right, #dc2626, #991b1b)",
+                color: isSuccess ? "#000" : "#fff",
+                borderRadius: "8px",
+                boxShadow: "0 4px 15px rgba(0, 0, 0, 0.4)"
+            }
+        }).showToast();
+    }
+    
+    function showModal(id) {
+        document.getElementById(id).classList.remove('hidden');
+    }
+    
+    function hideModal(id) {
+        document.getElementById(id).classList.add('hidden');
+    }
+    
+    function formatBRL(amount) {
+        // Garante que o valor seja tratado como número antes de formatar
+        return new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL' }).format(amount);
+    }
+
+    // ----------------------------------------------------------------------
+    // Lógica da API e Renderização
+    // ----------------------------------------------------------------------
+    
+    async function fetchStats() {
+        try {
+            // Chamada para a nova API
+            const response = await fetch('{{ url_for("api_admin_stats") }}');
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                const stats = data.stats;
+                
+                // 1. Atualizar Cards de Estatísticas
+                document.getElementById('total-users').textContent = stats.total_users.toLocaleString('pt-BR');
+                document.getElementById('total-balance').textContent = formatBRL(stats.total_balance_brl);
+                document.getElementById('active-accounts').textContent = stats.active_accounts.toLocaleString('pt-BR');
+                document.getElementById('transactions-24h').textContent = stats.transactions_last_24h.toLocaleString('pt-BR');
+                
+                // 2. Atualizar Tabela de Usuários
+                const tableBody = document.getElementById('user-table-body');
+                tableBody.innerHTML = ''; // Limpa o conteúdo atual
+
+                if (stats.user_list.length === 0) {
+                    tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-4 text-gray-500">Nenhum usuário normal cadastrado.</td></tr>';
+                    return;
+                }
+                
+                // Classe base para dar padding e estilo a todas as células
+                const baseCellClass = 'px-6 py-3 whitespace-nowrap text-sm';
+                
+                stats.user_list.forEach(user => {
+                    const row = tableBody.insertRow();
+                    row.className = 'border-b border-gray-700 hover:bg-gray-800 transition duration-100';
+                    
+                    // 1. ID
+                    let cell = row.insertCell();
+                    cell.className = `${baseCellClass} font-medium text-gray-300`;
+                    cell.textContent = user.id;
+
+                    // 2. Nome
+                    cell = row.insertCell();
+                    cell.className = `${baseCellClass} text-gray-400`;
+                    cell.textContent = user.nome;
+
+                    // 3. Email
+                    cell = row.insertCell();
+                    cell.className = `${baseCellClass} text-gray-400`;
+                    cell.textContent = user.email;
+
+                    // 4. CPF
+                    cell = row.insertCell();
+                    cell.className = `${baseCellClass} text-gray-400`;
+                    cell.textContent = user.cpf;
+                    
+                    // 5. Saldo
+                    cell = row.insertCell();
+                    cell.className = `${baseCellClass} text-right font-semibold text-green-orion`;
+                    cell.textContent = user.balance; // Já vem formatado do Python
+
+                    // 6. Transações
+                    cell = row.insertCell();
+                    cell.className = `${baseCellClass} text-right text-gray-400`;
+                    cell.textContent = user.transactions_count.toLocaleString('pt-BR');
+                });
+
+            } else {
+                showToast(data.message || "Erro ao buscar estatísticas do Admin.", false);
+            }
+        } catch (error) {
+            console.error('Erro na requisição da API de Admin:', error);
+            showToast("Erro de comunicação com o servidor. Verifique o console.", false);
+        }
+    }
+    
+    // ----------------------------------------------------------------------
+    // Lógica de Exclusão de Conta Admin
+    // ----------------------------------------------------------------------
+    document.getElementById('delete-admin-form').addEventListener('submit', async function(e) {
+        e.preventDefault();
+        
+        const password = document.getElementById('delete-password').value;
+        const deleteModal = document.getElementById('delete-modal');
+
+        try {
+            // Chamada para a API de exclusão de conta
+            const response = await fetch('{{ url_for("api_delete_account") }}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ senha: password })
+            });
+
+            const data = await response.json();
+            
+            if (response.ok && data.success) {
+                showToast(data.message, true);
+                // Redireciona para o logout para encerrar a sessão
+                setTimeout(() => {
+                    window.location.href = '{{ url_for("logout") }}';
+                }, 1000); 
+            } else {
+                showToast(data.message || "Senha incorreta ou erro na exclusão.", false);
+            }
+        } catch (error) {
+            console.error('Erro de rede ao tentar excluir conta:', error);
+            showToast("Erro de comunicação com o servidor.", false);
+        } finally {
+             deleteModal.classList.add('hidden');
+             document.getElementById('delete-password').value = '';
+        }
+    });
+    
+    // ----------------------------------------------------------------------
+    // Inicialização e Loop de Atualização
+    // ----------------------------------------------------------------------
+    document.addEventListener('DOMContentLoaded', () => {
+        fetchStats(); // Carrega imediatamente ao iniciar
+        // Configura a atualização automática a cada 10 segundos
+        setInterval(fetchStats, 10000); 
+    });
+
+</script>
+
+</body>
+</html>
