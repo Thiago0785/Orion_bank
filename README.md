@@ -79,9 +79,9 @@ cd orion-digital-bank
 
 # 2. (Opcional) Crie e ative um ambiente virtual
 Comando caso necessario para plolitica
-Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-python -m venv venv
-source venv/bin/activate 
+- Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+- python -m venv venv
+- source venv/bin/activate 
 
 # 3. Instale as dependências essenciais
 pip install Flask werkzeug bcrypt
