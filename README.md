@@ -78,6 +78,8 @@ git clone [LINK_DO_REPOSITORIO]
 cd orion-digital-bank
 
 # 2. (Opcional) Crie e ative um ambiente virtual
+Comando caso necessario para plolitica
+Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 python -m venv venv
 source venv/bin/activate 
 
@@ -86,19 +88,20 @@ pip install Flask werkzeug bcrypt
 
 
 2. Configuração Inicial do Admin
+-  Cria o arquivo users.json com a conta administrativa
+- python setup_admin.py
 
+3. Execução do Servidor
+   
 É obrigatório rodar o script de setup para criar o arquivo users.json e criptografar a senha inicial do Super Admin.
 
-# Cria o arquivo users.json com a conta administrativa
+Cria o arquivo users.json com a conta administrativa
 python setup_admin.py
 
 
-3. Execução do Servidor
 
 # Inicie o servidor Flask
 python app.py
-
-
 O servidor estará disponível em: http://127.0.0.1:5000
 
 🔑 Credenciais para Demonstração
