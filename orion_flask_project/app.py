@@ -98,7 +98,10 @@ def get_system_stats():
         "user_list": user_list
     }
 
-
+@app.route('/desenvolvimento')
+def desenvolvimento():
+    # Certifique-se que o arquivo desenvolvimento.html está na pasta 'templates'
+    return render_template('desenvolvimento.html')
 # --- Decoradores de Autenticação ---
 
 
@@ -467,3 +470,24 @@ def api_delete_account():
     except Exception as e:
         app.logger.error(f"Erro ao deletar conta: {e}")
         return jsonify({"success": False, "message": "Erro interno ao deletar conta."}), 500
+
+
+# Certifique-se que esta linha está no final do seu arquivo
+if __name__ == '__main__':
+    # Inicialização do super admin se não existir
+    users = load_users()
+    if "super_admin" not in users:
+        # Senha padrão: admin123 (será hasheada, mas o login usa a chave 'senha' para o admin)
+        users["super_admin"] = {
+            "email": "admin@orion.com",
+            "senha": generate_password_hash("admin123"), 
+            "nome": "Super Admin Orion",
+            "cpf": "000.000.000-00",
+            "is_admin": True
+        }
+        save_users(users)
+        print("Super Admin criado com credenciais: admin@orion.com / admin123")
+
+
+    # Inicia o servidor Flask
+    app.run(debug=True)

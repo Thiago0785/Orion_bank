@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="pt-BR" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Orion - Detalhes do Desenvolvimento</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body {
+            box-sizing: border-box;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        /* Cores Personalizadas (Mantidas do seu código original) */
+        .bg-dark { background-color: #0a0a0a; }
+        .bg-dark-secondary { background-color: #1a1a1a; }
+        .bg-dark-card { background-color: #1f1f1f; }
+        .text-green-orion { color: #00ff88; }
+        .border-green-orion { border-color: #00ff88; }
+        .gradient-green { background: linear-gradient(135deg, #00ff88 0%, #00cc6a 100%); }
+
+        /* Estilo para links de volta */
+        .link-back {
+            transition: color 0.2s, transform 0.2s;
+        }
+        .link-back:hover {
+            transform: translateX(-5px);
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+</head>
+
+<body class="bg-dark text-gray-100 min-h-screen">
+
+    <div class="container mx-auto px-6 py-12">
+        
+        <a href="{{ url_for('index') }}" class="flex items-center text-gray-400 hover:text-green-orion link-back mb-12">
+            <i class="fas fa-arrow-left mr-3"></i>
+            <span>Voltar para a Home (Orion Bank)</span>
+        </a>
+
+        <header class="text-center mb-16">
+            <h1 class="text-5xl font-extrabold text-white mb-4">
+                <span class="text-green-orion">Detalhes</span> do Desenvolvimento
+            </h1>
+            <p class="text-xl text-gray-400 max-w-3xl mx-auto">
+                Uma visão aprofundada da arquitetura e das tecnologias que impulsionam o Banco Digital Orion.
+            </p>
+        </header>
+        
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-10">
+            
+            <div class="lg:col-span-2 bg-dark-secondary p-8 rounded-xl shadow-2xl border border-gray-700">
+                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-cogs text-green-orion mr-3"></i> 
+                    Tecnologias Fundamentais
+                </h2>
+                
+                <p class="text-gray-300 mb-6">
+                    O Orion é construído com uma pilha de tecnologias **moderna e eficiente**, garantindo alto desempenho, segurança e escalabilidade.
+                </p>
+
+                <ul class="space-y-4 text-lg">
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-orion mt-1 mr-3 min-w-4"></i>
+                        <div>
+                            <strong class="text-white">Backend: Python & Flask</strong>
+                            <p class="text-gray-400 text-sm">Framework leve para APIs rápidas e gestão de lógica de negócios, otimizando o consumo de recursos.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-orion mt-1 mr-3 min-w-4"></i>
+                        <div>
+                            <strong class="text-white">Banco de Dados: SQLite</strong>
+                            <p class="text-gray-400 text-sm">Usado para prototipagem rápida e projetos menores, oferecendo um sistema de gerenciamento de dados simples e robusto.</p>
+                        </div>
+                    </li>
+                    <li class="flex items-start">
+                        <i class="fas fa-check-circle text-green-orion mt-1 mr-3 min-w-4"></i>
+                        <div>
+                            <strong class="text-white">Frontend: HTML/CSS & Tailwind CSS</strong>
+                            <p class="text-gray-400 text-sm">Interface de usuário construída com foco em acessibilidade e responsividade usando o framework utilitário Tailwind CSS.</p>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="bg-dark-secondary p-8 rounded-xl shadow-2xl border border-gray-700">
+                <h2 class="text-3xl font-bold text-white mb-6 flex items-center">
+                    <i class="fas fa-bullseye text-green-orion mr-3"></i> 
+                    Objetivos do Projeto
+                </h2>
+                <ul class="space-y-4 text-gray-300">
+                    <li class="border-b border-gray-700 pb-2">
+                        <strong class="text-green-orion">Segurança Máxima:</strong> Implementação de hash de senhas e medidas de proteção contra injeção SQL.
+                    </li>
+                    <li class="border-b border-gray-700 pb-2">
+                        <strong class="text-green-orion">UX/UI Intuitiva:</strong> Design minimalista e escuro (*Dark Mode*) para foco e conforto visual.
+                    </li>
+                    <li class="border-b border-gray-700 pb-2">
+                        <strong class="text-green-orion">Código Limpo:</strong> Manutenção da estrutura modular e bem comentada para fácil manutenção e expansão.
+                    </li>
+                </ul>
+            </div>
+            
+            <div class="lg:col-span-3 bg-dark-secondary p-8 rounded-xl shadow-2xl border border-green-orion/50 text-center">
+                 <h2 class="text-3xl font-bold text-white mb-4 flex items-center justify-center">
+                    <i class="fas fa-user-astronaut text-green-orion mr-3"></i> 
+                    O Desenvolvedor
+                </h2>
+                <p class="text-gray-300 max-w-2xl mx-auto mb-6">
+                    Este sistema foi desenvolvido como parte de um projeto de demonstração, focado em aplicar conceitos de programação web full-stack (Flask + Frontend).
+                </p>
+                <a href="https://github.com/victornbjj/Orion_bank" target="_blank" class="inline-flex items-center gradient-green text-gray-900 font-semibold py-3 px-8 rounded-full shadow-lg hover:shadow-green-orion/50 transition duration-300 pulse-shadow">
+                    <i class="fas fa-external-link-alt mr-2"></i> Ver Mais Detalhes sobre o Desenvolvedor
+                </a>
+            </div>
+
+        </main>
+        
+    </div>
+
+</body>
+</html>

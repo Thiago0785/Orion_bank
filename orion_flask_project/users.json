@@ -1,7 +1,7 @@
 {
     "super_admin": {
         "email": "admin@orion.com",
-        "senha": "scrypt:32768:8:1$tJsbtizYi9AWKqHo$4cf0f2863b80830a4372a897082b0b3a64ae89215abe2d37543760898a1f04ba9e4e4d2c8970cac74b1263fa89d84071a8b0ae84e92337bf6fd75f7b66b520d7",
+        "senha": "scrypt:32768:8:1$rH6BtaGjjrCvBKlE$53defcc60671b464401583ba7cef86cddfb5d9b0e672b0ef5fab53bbcad726582714ca5704968c9740409cb25f09a8ed9d7cdafe281651496b1e780d4626dfa8",
         "nome": "Orion Super Admin",
         "cpf": "00000000000",
         "is_admin": true,
@@ -9,13 +9,40 @@
         "contas_ativas": 5,
         "transactions": []
     },
-    "8ac51b170cc04055a0dc266aa3b8b28e": {
-        "email": "gabifalso@gmail.com",
-        "password_hash": "scrypt:32768:8:1$1XwxeQreB9uURf0H$51c75c162d7e72a92822723f23b6b8de04380c35bb853f45faf748f11d0f0566e6c5bbe8143b6f7492f43286992342667e5e7b24b982d67e323c8eb202aeeca6",
-        "nome": "Gabrielle Pereira",
+    "85e64ebb36c64b5888b7c715887eee94": {
+        "email": "thiagofalso@gmail.com",
+        "password_hash": "scrypt:32768:8:1$KBNwObJhByPTmP9R$484ee5fed1070b3b315ef9968c21b5adefe7af1546704ab3660af3607758d5b73bf962362dc5cf92fd6b5895b97e386bd46f3869efa4b1f150a2d31c15fb3341",
+        "nome": "thiago falso",
         "cpf": "11122233344",
         "is_admin": false,
-        "balance": 1000.0,
-        "transactions": []
+        "balance": 0.0,
+        "transactions": [
+            {
+                "id": "ea14098650164218a636ee8fe9fcc466",
+                "type": "sent",
+                "amount": 1000.0,
+                "timestamp": "2025-11-18 19:36:20",
+                "recipient_name": "joao",
+                "recipient_id": "176a0edcfad34f0894dbb1816cf4674f"
+            }
+        ]
+    },
+    "176a0edcfad34f0894dbb1816cf4674f": {
+        "email": "jvnascimentopereira@gmail.com",
+        "password_hash": "scrypt:32768:8:1$wcm6hxEnToAcnkbD$39748e8c7c663e47e124fda0d35cd7b85787961d94ad50de33bf7f230674033d3d0816f47e2f0fa3e2b77f40b546f75b16ec9d95e07442e954bc4f6ca8352254",
+        "nome": "joao",
+        "cpf": "14905446406",
+        "is_admin": false,
+        "balance": 2000.0,
+        "transactions": [
+            {
+                "id": "e9855c172a4b4ac789915a7259ed2e36",
+                "type": "received",
+                "amount": 1000.0,
+                "timestamp": "2025-11-18 19:36:20",
+                "sender_name": "thiago falso",
+                "sender_id": "85e64ebb36c64b5888b7c715887eee94"
+            }
+        ]
     }
 }
