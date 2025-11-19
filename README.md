@@ -81,6 +81,7 @@ cd orion-digital-bank
 Comando caso necessario para plolitica
 - Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 - python -m venv venv
+- .\venv\Scripts\Activate.ps1
 - source venv/bin/activate 
 
 # 3. Instale as dependências essenciais
