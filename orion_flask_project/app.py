@@ -22,6 +22,8 @@ app = Flask(__name__)
 # Mantenha esta chave secreta!
 app.secret_key = "uma_chave_secreta_muito_segura_e_longa"
 USERS_FILE = "users.json"
+# URL configurável para atendimento via Gemini (defina como variável de ambiente opcionalmente)
+GEMINI_SUPPORT_URL = os.environ.get("GEMINI_SUPPORT_URL", "https://example.com/gemini-chat")
 
 
 # --- Funções de Manipulação de Dados (Simulação de DB) ---
@@ -137,7 +139,7 @@ def admin_required(f):
 @app.route("/")
 def index():
     """Rota da página inicial (Login/Cadastro)."""
-    return render_template("index.html")
+    return render_template("index.html", gemini_url=GEMINI_SUPPORT_URL)
 
 
 @app.route("/dashboard")
