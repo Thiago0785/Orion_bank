@@ -432,15 +432,55 @@
         }
 
     });
+
+    // ------------------------------------------------------------------
+    // Gemini modal (iframe) - carrega apenas quando aberto e limpa ao fechar
+    // ------------------------------------------------------------------
+    const GEMINI_URL = "{{ gemini_url|e('js') }}";
+
+    window.openGeminiModal = () => {
+        const modal = document.getElementById('gemini-modal');
+        const iframe = document.getElementById('gemini-iframe');
+        const openNew = document.getElementById('gemini-modal-open-new');
+        if (!modal || !iframe) return;
+        // Set iframe src only when opening
+        iframe.src = GEMINI_URL;
+        // Update fallback link
+        if (openNew) openNew.href = GEMINI_URL;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        // Prevent body scroll while modal is open
+        document.body.style.overflow = 'hidden';
+    };
+
+    window.closeGeminiModal = () => {
+        const modal = document.getElementById('gemini-modal');
+        const iframe = document.getElementById('gemini-iframe');
+        if (!modal || !iframe) return;
+        // Clear the iframe src to stop any activity
+        iframe.src = '';
+        modal.classList.add('hidden');
+        modal.classList.remove('flex');
+        document.body.style.overflow = '';
+    };
+
+    // Fecha modal com o ESC
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeGeminiModal();
+        }
+    });
+
+    // Fecha modal ao clicar no overlay (quando o target for o overlay)
+    const geminiModalOverlay = document.getElementById('gemini-modal');
+    if (geminiModalOverlay) {
+        geminiModalOverlay.addEventListener('click', (e) => {
+            if (e.target === geminiModalOverlay) closeGeminiModal();
+        });
+    }
  </script>
 
-<!-- Botão de atendimento Gemini (flutuante) -->
-{% if gemini_url %}
-<a id="gemini-support-btn" href="{{ gemini_url }}" target="_blank" rel="noopener noreferrer" aria-label="Atendimento Gemini - Banco Orion" title="Abrir atendimento Gemini em nova aba" class="fixed bottom-6 right-6 z-50 bg-green-orion text-gray-900 font-semibold py-3 px-4 rounded-full shadow-2xl hover:scale-105 transition transform duration-200 flex items-center space-x-2">
-    <i class="fas fa-robot" aria-hidden="true"></i>
-    <span class="hidden sm:inline">Atendimento (Gemini IA)</span>
-</a>
-{% endif %}
+{% include '_gemini_modal.html' %}
 
 </body>
 </html>

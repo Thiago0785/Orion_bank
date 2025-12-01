@@ -118,6 +118,12 @@ def get_system_stats():
         "user_list": user_list
     }
 
+
+@app.context_processor
+def inject_gemini_url():
+    """Disponibiliza `gemini_url` para todos os templates automaticamente."""
+    return dict(gemini_url=GEMINI_SUPPORT_URL)
+
 @app.route('/desenvolvimento')
 def desenvolvimento():
     # Certifique-se que o arquivo desenvolvimento.html está na pasta 'templates'

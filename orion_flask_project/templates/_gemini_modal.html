@@ -1,0 +1,63 @@
+<!-- Gemini floating support button and modal partial -->
+{% if gemini_url %}
+<button id="gemini-support-btn" onclick="openGeminiModal()" aria-label="Atendimento Gemini - Banco Orion" title="Abrir atendimento Gemini" class="fixed bottom-6 right-6 z-50 bg-green-orion text-gray-900 font-semibold py-3 px-4 rounded-full shadow-2xl hover:scale-105 transition transform duration-200 flex items-center space-x-2">
+    <i class="fas fa-robot" aria-hidden="true"></i>
+    <span class="hidden sm:inline">Atendimento (Gemini IA)</span>
+</button>
+
+<!-- Modal do atendimento Gemini -->
+<div id="gemini-modal" class="fixed inset-0 bg-black bg-opacity-70 z-50 hidden items-center justify-center p-4">
+    <div id="gemini-modal-card" class="bg-dark-card w-full max-w-5xl rounded-xl overflow-hidden border border-green-orion/30 shadow-2xl">
+        <div class="flex items-center justify-between p-3 border-b border-gray-700">
+            <h3 class="text-lg font-semibold text-white">Atendimento Gemini - Banco Orion</h3>
+            <div class="flex items-center space-x-2">
+                <a id="gemini-modal-open-new" href="{{ gemini_url }}" target="_blank" rel="noopener noreferrer" class="text-sm text-green-orion hover:underline">Abrir em nova aba</a>
+                <button id="gemini-modal-close" onclick="closeGeminiModal()" class="text-white text-xl font-bold p-1 transition hover:text-green-orion" aria-label="Fechar atendimento">&times;</button>
+            </div>
+        </div>
+        <iframe id="gemini-iframe" src="" class="w-full h-[80vh] border-0" allow="microphone; camera; clipboard-write"></iframe>
+    </div>
+</div>
+
+<script>
+// Gemin modal functions
+const GEMINI_URL = "{{ gemini_url|e('js') }}";
+
+window.openGeminiModal = () => {
+    const modal = document.getElementById('gemini-modal');
+    const iframe = document.getElementById('gemini-iframe');
+    const openNew = document.getElementById('gemini-modal-open-new');
+    if (!modal || !iframe) return;
+    iframe.src = GEMINI_URL;
+    if (openNew) openNew.href = GEMINI_URL;
+    modal.classList.remove('hidden');
+    modal.classList.add('flex');
+    document.body.style.overflow = 'hidden';
+};
+
+window.closeGeminiModal = () => {
+    const modal = document.getElementById('gemini-modal');
+    const iframe = document.getElementById('gemini-iframe');
+    if (!modal || !iframe) return;
+    iframe.src = '';
+    modal.classList.add('hidden');
+    modal.classList.remove('flex');
+    document.body.style.overflow = '';
+};
+
+// Close with ESC
+document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+        closeGeminiModal();
+    }
+});
+
+// Close when clicking overlay
+const geminiModalOverlay = document.getElementById('gemini-modal');
+if (geminiModalOverlay) {
+    geminiModalOverlay.addEventListener('click', (e) => {
+        if (e.target === geminiModalOverlay) closeGeminiModal();
+    });
+}
+</script>
+{% endif %}
