@@ -1,6 +1,7 @@
 import json
 import os
 import uuid
+from urllib.parse import quote_plus
 from functools import wraps
 from datetime import datetime, timedelta
 
@@ -22,8 +23,25 @@ app = Flask(__name__)
 # Mantenha esta chave secreta!
 app.secret_key = "uma_chave_secreta_muito_segura_e_longa"
 USERS_FILE = "users.json"
-# URL configurável para atendimento via Gemini (defina como variável de ambiente opcionalmente)
-GEMINI_SUPPORT_URL = os.environ.get("GEMINI_SUPPORT_URL", "https://example.com/gemini-chat")
+
+# URL configurável para atendimento via Gemini
+# - `GEMINI_SUPPORT_URL` pode ser fornecida completa via variável de ambiente,
+#   mas se não, construímos a partir de `GEMINI_SUPPORT_URL_BASE` e `GEMINI_SYSTEM_PROMPT`.
+GEMINI_SUPPORT_URL = os.environ.get("GEMINI_SUPPORT_URL")
+GEMINI_SUPPORT_BASE_URL = os.environ.get(
+    "GEMINI_SUPPORT_URL_BASE",
+    "https://example.com/gemini-chat",
+)
+
+# Prompt padrão (pode ser sobrescrito via env var):
+GEMINI_SYSTEM_PROMPT = os.environ.get(
+    "GEMINI_SYSTEM_PROMPT",
+    "Você é um atendente virtual do Banco Orion. Você se apresenta como um atendente do banco, é educado, acolhedor, claro e profissional. Explique procedimentos em linguagem simples e não peça dados sensíveis (como senhas ou números de cartão). Oriente o cliente a usar o site ou aplicativo para operações seguras e, quando necessário, peça confirmação para não compartilhar informações.",
+)
+
+# Constrói a URL final apenas se `GEMINI_SUPPORT_URL` não estiver explícita
+if not GEMINI_SUPPORT_URL:
+    GEMINI_SUPPORT_URL = f"{GEMINI_SUPPORT_BASE_URL}?system_prompt={quote_plus(GEMINI_SYSTEM_PROMPT)}"
 
 
 # --- Funções de Manipulação de Dados (Simulação de DB) ---
