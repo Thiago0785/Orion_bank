@@ -30,7 +30,7 @@ USERS_FILE = "users.json"
 GEMINI_SUPPORT_URL = os.environ.get("GEMINI_SUPPORT_URL")
 GEMINI_SUPPORT_BASE_URL = os.environ.get(
     "GEMINI_SUPPORT_URL_BASE",
-    "https://example.com/gemini-chat",
+    "https://gemini.url",
 )
 
 # Prompt padrão (pode ser sobrescrito via env var):
